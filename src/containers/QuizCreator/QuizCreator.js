@@ -5,11 +5,12 @@ import Input from '../../components/UI/input/input'
 import Select from '../../components/UI/Select/Select'
 import {createControl, validate, validateForm} from '../../form/formFramework'
 import Auxiliary from '../../hoc/Auxiliary/Auxiliary'
+import axios from '../../axios/axios-quiz'
 
 function createOptionControl(number) {
   return createControl({
-    label: `Var - ${number}`,
-    errorMessage: 'Value cannot be empty',
+    label: `Вариант ${number}`,
+    errorMessage: 'Значение не может быть пустым',
     id: number
   }, {required: true})
 }
@@ -17,8 +18,8 @@ function createOptionControl(number) {
 function createFormControls() {
   return {
     question: createControl({
-      label: 'Add question',
-      errorMessage: 'Value cannot be empty'
+      label: 'Введите вопрос',
+      errorMessage: 'Вопрос не может быть пустым'
     }, {required: true}),
     option1: createOptionControl(1),
     option2: createOptionControl(2),
@@ -70,11 +71,22 @@ export default class QuizCreator extends Component {
     })
   }
 
-  createQuizHandler = event => {
+  createQuizHandler = async event => {
     event.preventDefault()
 
-    console.log(this.state.quiz)
-    // TODO: Server
+    try {
+      await axios.post('/quizes.json', this.state.quiz)
+
+      this.setState({
+        quiz: [],
+        isFormValid: false,
+        rightAnswerId: 1,
+        formControls: createFormControls()
+      })
+
+    } catch (e) {
+      console.log(e)
+    }
   }
 
   changeHandler = (value, controlName) => {
@@ -122,7 +134,7 @@ export default class QuizCreator extends Component {
 
   render() {
     const select = <Select
-      label="Choose the correct answer"
+      label="Выберите правильный ответ"
       value={this.state.rightAnswerId}
       onChange={this.selectChangeHandler}
       options={[
@@ -136,7 +148,7 @@ export default class QuizCreator extends Component {
     return (
       <div className={classes.QuizCreator}>
         <div>
-          <h1>Create a test</h1>
+          <h1>Создание теста</h1>
 
           <form onSubmit={this.submitHandler}>
 
@@ -149,7 +161,7 @@ export default class QuizCreator extends Component {
               onClick={this.addQuestionHandler}
               disabled={!this.state.isFormValid}
             >
-              Add a question
+              Добавить вопрос
             </Button>
 
             <Button
@@ -157,7 +169,7 @@ export default class QuizCreator extends Component {
               onClick={this.createQuizHandler}
               disabled={this.state.quiz.length === 0}
             >
-              Create a test
+              Создать тест
             </Button>
 
           </form>

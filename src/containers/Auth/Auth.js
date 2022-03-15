@@ -2,16 +2,10 @@ import React from "react";
 import classes from './Auth.module.css';
 import Button from '../../components/UI/Button/Button.js'
 import Input from "../../components/UI/input/input";
+import is from 'is_js'
 
-const validateEmail = (email) => {
-  return String(email)
-    .toLowerCase()
-    .match(
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-    );
-};
 export default class Auth extends React.Component {
-  
+
   state = {
     isFormValid: false,
     formControls: {
@@ -19,29 +13,28 @@ export default class Auth extends React.Component {
         value: '',
         type: 'email',
         label: 'Email',
-        errorMessage: 'enter rigth email',
+        errorMessage: 'Введите корректный email',
         valid: false,
         touched: false,
         validation: {
           required: true,
-          email: true,
+          email: true
         }
       },
       password: {
         value: '',
         type: 'password',
-        label: 'Password',
-        errorMessage: 'enter rigth email',
+        label: 'Пароль',
+        errorMessage: 'Введите корректный пароль',
         valid: false,
         touched: false,
         validation: {
           required: true,
-          minLength: 6,
+          minLength: 6
         }
       }
     }
   }
-
 
   loginHandler = () => {
 
@@ -52,13 +45,14 @@ export default class Auth extends React.Component {
   }
 
   submitHandler = event => {
-    event.preventDefault();
+    event.preventDefault()
   }
 
   validateControl(value, validation) {
     if (!validation) {
       return true
     }
+
     let isValid = true
 
     if (validation.required) {
@@ -66,7 +60,7 @@ export default class Auth extends React.Component {
     }
 
     if (validation.email) {
-      isValid = validateEmail(value) && isValid
+      isValid = is.email(value) && isValid
     }
 
     if (validation.minLength) {
@@ -77,23 +71,23 @@ export default class Auth extends React.Component {
   }
 
   onChangeHandler = (event, controlName) => {
-    const formControls = {...this.state.formControls}
-    const control = {...formControls[controlName]}
-    
+    const formControls = { ...this.state.formControls }
+    const control = { ...formControls[controlName] }
+
     control.value = event.target.value
     control.touched = true
     control.valid = this.validateControl(control.value, control.validation)
-    
-    formControls[controlName] = control;
-    
+
+    formControls[controlName] = control
+
     let isFormValid = true
+
     Object.keys(formControls).forEach(name => {
       isFormValid = formControls[name].valid && isFormValid
     })
 
     this.setState({
-      formControls,
-      isFormValid
+      formControls, isFormValid
     })
   }
 
@@ -108,38 +102,40 @@ export default class Auth extends React.Component {
           valid={control.valid}
           touched={control.touched}
           label={control.label}
-          errorMessage={control.errorMessage}
           shouldValidate={!!control.validation}
+          errorMessage={control.errorMessage}
           onChange={event => this.onChangeHandler(event, controlName)}
         />
       )
     })
   }
 
-  render () {
+  render() {
     return (
       <div className={classes.Auth}>
         <div>
-        <h1>Authentification</h1>
-        <form className={classes.AuthForm} onSubmit={this.submitHandler}>
-         
-          {this.renderInputs()}
+          <h1>Авторизация</h1>
 
-          <Button
-            type="success"
-            onclick={this.loginHandler}
-            disabled={!this.state.isFormValid}
-          >
-            Enter
-          </Button>
-          <Button
-            type="primary"
-            onclick={this.registerHandler}
-            disabled={!this.state.isFormValid}
-          >
-            Registration
-          </Button>
-        </form>
+          <form onSubmit={this.submitHandler} className={classes.AuthForm}>
+
+            { this.renderInputs() }
+
+            <Button
+              type="success"
+              onClick={this.loginHandler}
+              disabled={!this.state.isFormValid}
+            >
+              Войти
+            </Button>
+
+            <Button
+              type="primary"
+              onClick={this.registerHandler}
+              disabled={!this.state.isFormValid}
+            >
+              Зарегистрироваться
+            </Button>
+          </form>
         </div>
       </div>
     )
