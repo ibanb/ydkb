@@ -17,7 +17,7 @@ export default class QuizList extends Component {
         <li
           key={quiz.id}
         >
-          <NavLink to={'/quiz/' + quiz.id}>
+          <NavLink to={'/quizes/' + quiz.id}>
             {quiz.name}
           </NavLink>
         </li>
