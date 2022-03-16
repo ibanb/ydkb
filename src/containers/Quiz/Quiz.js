@@ -5,6 +5,7 @@ import FinishedQuiz from '../../components/FinishedQuiz/FinishedQuiz'
 import axios from '../../axios/axios-quiz'
 import Loader from '../../components/UI/Loader/Loader'
 
+
 class Quiz extends Component {
   state = {
     results: {},
@@ -73,7 +74,8 @@ class Quiz extends Component {
 
   async componentDidMount() {
     try {
-      const response = await axios.get(`/quizes/${this.props.match.params.id}.json`)
+      console.log(this.props);
+      const response = await axios.get(`/quizes/${this.props}.json`)
       const quiz = response.data
 
       this.setState({
